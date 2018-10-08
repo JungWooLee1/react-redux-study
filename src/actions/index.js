@@ -7,5 +7,5 @@ export function fetchWeather() {
   return {
     type: FETCH_WEATHER
   };
-  
+
 }
