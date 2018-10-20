@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { fetchWeather } from '../actions/index'
 
-export default class SearchBar extends Component {
+class SearchBar extends Component {
 
   constructor(props) {
-    super();
+    super(props);
 
     // term : 검색
     this.state = { term: '' };
@@ -12,6 +15,7 @@ export default class SearchBar extends Component {
     // 이는 onInputChange를 대체합니다.
     // 즉 기존 함수를 가지고 바인딩하여, 기존에 있는 함수를 대체하는 구문입니다.
     this.onInputChange = this.onInputChange.bind(this);
+    this.onFormSubmit = this.onFormSubmit.bind(this);
   }
 
   // 모든 DOM 이벤트 핸들러인 onChange나 onClick, onHover, onScroll 과 같은 것들은 event 오브젝트가 따라온다.
@@ -25,7 +29,10 @@ export default class SearchBar extends Component {
   onFormSubmit(event) {
     event.preventDefault();
 
-    // we need to go fetch
+    // we need to go fetch weather data
+    this.props.fetchWeather(this.state.term);
+    this.setState({term: ''});
+
   }
 
   render() {
@@ -45,3 +52,12 @@ export default class SearchBar extends Component {
     )
   }
 }
+
+// 호출될 때마다 dispatch와 함께 액션이 반환된다.
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchWeather }, dispatch);
+}
+
+// mapDispatchToProps가 2번째 요소로 들어갈 때 null 반환
+// 리덕스가 스테이트를 유지하고 있으니 컨테이너가 신경쓸 필요가 없다는
+export default connect(null, mapDispatchToProps)(SearchBar) ;
